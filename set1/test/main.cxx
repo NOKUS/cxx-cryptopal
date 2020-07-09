@@ -52,6 +52,7 @@ void hex_to_string(const uint8_t* input, string output)
     stringstream ss;
 
     cout << "longueur input = " << lenInput << endl;
+    cout << "input[0] = " << input[0] << endl;
 
     for (int i = 0; i < lenInput; i++)
     {
@@ -68,6 +69,7 @@ int main()
    string input = "49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d";
    uint8_t* output;
    string_to_hex(input, output);
+   
    string output2;
    hex_to_string(output, output2);
    cout << output2 << endl;
