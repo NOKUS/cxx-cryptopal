@@ -7,7 +7,7 @@ LIBDIR=$(BUILD)/obj
 
 CC=gcc
 CXX=g++
-CXXFLAGS= -Wall -O3 -I$(HEADDIR)
+CXXFLAGS= -Wall -O3 -I$(HEADDIR) -g
 LDFLAGS=
 
 BIN=$(BUILD)/cryptopal
@@ -20,7 +20,7 @@ all: $(BIN)
 $(BIN): $(OBJXX)
 	@$(CXX) -o $@ $^ $(LDFLAGS)
 
-$(LIBDIR)/%.o: $(SRCDIR)/%.cxx $(wildcard $(HEADDIR)/*.hxx)
+$(LIBDIR)/%.o: $(SRCDIR)/%.cxx 
 	@mkdir -p $(@D)
 	@$(CXX) -o $@ -c $<  $(CXXFLAGS)
 

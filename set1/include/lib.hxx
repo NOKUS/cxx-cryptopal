@@ -8,6 +8,6 @@
 #include <sstream>
 #include <iomanip>
 
-typedef uint8_t* base64;
+typedef std::string base64;
 
 #endif//__LIB_HXX__
