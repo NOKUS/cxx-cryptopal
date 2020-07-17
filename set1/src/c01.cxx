@@ -1,6 +1,6 @@
 #include "c01.hxx"
 
-void string_to_hex(const std::string &input, int& lenOutput, uint8_t* &output)
+void hex_string_to_hex_array(const std::string &input, int& lenOutput, uint8_t* &output)
 {
     /** Encode string with hexa chars to array of bytes that corresponds to that hexa values.
      * @param   input       String with hexa chars.
@@ -21,7 +21,7 @@ void string_to_hex(const std::string &input, int& lenOutput, uint8_t* &output)
     }
 }
 
-void hex_to_string(const uint8_t* input, const int lenInput, std::string &output)
+void hex_array_to_hex_string(const uint8_t* input, const int lenInput, std::string &output)
 {
     /** Encode a bytes' array into a string where char is hex representation of byte.
      * @param   input       Array of bytes.
@@ -95,7 +95,7 @@ void convert_to_base64(const uint8_t* input, std::string& output)
     output += alphabet[b3];
 }
 
-void hex_to_base64(const uint8_t* input, const int lenInput, base64& output)
+void hex_array_to_base64(const uint8_t* input, const int lenInput, base64& output)
 {
     /** Convert an array of bytes to its base64 representation array.
      * @param   input       Array of bytes.
@@ -135,7 +135,7 @@ void inv_convert_to_base64(const std::string &input, const int posInInput, const
     output[posInOutput+2] = ((b2 << 6) & 0b11000000) ^ (b3 & 0b00111111);
 }
 
-void get_len_padding(const base64 &input, int & lenPad)
+void get_len_padding(const base64 &input, int &lenPad)
 {
     /** Give length of padding in input base64 representation.
      * @param   input       Base64 string.
@@ -178,14 +178,19 @@ void base64_unpadding(const base64 &input, const int posInOutput, uint8_t* &outp
         {
             output[posInOutput] = ((b0 & 0b00111111) << 2) ^ ((b1 & 0b00110000) >> 4);
         }
-        b2 = (uint8_t)alphabet.find(input[n-2]);
-        output[posInOutput] = ((b0 & 0b00111111) << 2) ^ ((b1 & 0b00110000) >> 4);
-        output[posInOutput+1] = ((b1 & 0b00001111) << 4) ^ ((b2 &0b00111100) >> 2);
+        else
+        {
+            b2 = (uint8_t)alphabet.find(input[n-2]);
+            output[posInOutput] = ((b0 & 0b00111111) << 2) ^ ((b1 & 0b00110000) >> 4);
+            output[posInOutput+1] = ((b1 & 0b00001111) << 4) ^ ((b2 &0b00111100) >> 2);   
+        }
+        
+        
     }
     
 }
 
-void base64_to_hex(const base64 &input, int& lenOutput, uint8_t* &output)
+void base64_to_hex_array(const base64 &input, int& lenOutput, uint8_t* &output)
 {
     /** Make inverse of hex_to_base64
      * @param   input       Array of base64 encoding.
@@ -204,7 +209,7 @@ void base64_to_hex(const base64 &input, int& lenOutput, uint8_t* &output)
     get_len_padding(input, lenPad);
 
     /* Compute the length of output from that of base64 string */
-    lenOutput = (regularLen*3)/4 + ((3-lenPad)%3);
+    lenOutput = (regularLen/4)*3 + ((3-lenPad)%3);
     output = new uint8_t[lenOutput];
 
     int posInOuput = 0;
@@ -214,4 +219,48 @@ void base64_to_hex(const base64 &input, int& lenOutput, uint8_t* &output)
     }
 
     base64_unpadding(input, posInOuput, output);        
+}
+
+void string_to_bytes(const std::string &input, int &lenOuput, uint8_t* &output)
+{
+    /** Convert a string into array of byte
+     * @param   input       input string
+     * @param   lenOuput    length of output array of byte
+     * @param   output      array of byte
+     */
+    lenOuput = input.size();
+    output = new uint8_t[lenOuput];
+    int i = 0;
+    for (char c : input)
+    {
+        output[i] = c;
+        i++;
+    }
+}
+
+void string_to_base64(const std::string &input, base64 &output)
+{
+    /** Convert any string to its base64 string representation.
+     * @param   input       String to convert in base64
+     * @param   output      String that represente the base64 encoding of input.
+     */
+
+    uint8_t *arrayBytesOfInput;
+    int lenArrayByte;
+
+    string_to_bytes(input, lenArrayByte, arrayBytesOfInput);
+    hex_array_to_base64(arrayBytesOfInput, lenArrayByte, output);
+}
+
+void base64_to_string(const base64 &input, std::string &output)
+{
+    /** Convert a base64 string into usual representation of string.
+     * @param   input       Base64 string.
+     * @param   output      Usual representation of string.
+     */
+    
+    uint8_t *arrayBytes;
+    int lenArrayBytes;
+    base64_to_hex_array(input, lenArrayBytes, arrayBytes);
+    output.assign(arrayBytes, arrayBytes + lenArrayBytes);
 }

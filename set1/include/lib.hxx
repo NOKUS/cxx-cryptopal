@@ -7,6 +7,7 @@
 #include <cassert>
 #include <sstream>
 #include <iomanip>
+#include <vector>
 
 typedef std::string base64;
 
