@@ -12,7 +12,7 @@ int main()
    base64 b64_str;
    string str_output;
    int n;
-   string_to_hex(input, output, n);
+   string_to_hex(input, n, output);
    hex_to_base64(output, n, b64_str);
 
    cout << input << endl;
