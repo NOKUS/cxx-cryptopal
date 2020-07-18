@@ -9,6 +9,9 @@
 #include <iomanip>
 #include <vector>
 
+#include "test_c01.hxx"
+#include "test_c02.hxx"
+
 typedef std::string base64;
 
 #endif//__LIB_HXX__
