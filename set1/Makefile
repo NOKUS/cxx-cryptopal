@@ -8,7 +8,7 @@ LIBDIR=$(BUILD)/obj
 
 CC=gcc
 CXX=g++
-CXXFLAGS= -Wall -O3 -g
+CXXFLAGS= -Wall -O3 -g -std=c++17
 LDFLAGS=
 
 BIN=$(BUILD)/cryptopal

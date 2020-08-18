@@ -3,8 +3,9 @@
 
 bool test_detect_single_character_xor()
 {
+
     /* input file */
-    std::string inputFileName = "/home/donald/Documents/Tutoriel/cryptopal/set1/test/texts/4.txt";
+    std::string inputFileName = "test/texts/4.txt";
     std::string outputCtxtStr;
     std::string outputPtxtStr;
     uint8_t key;

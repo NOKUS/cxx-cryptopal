@@ -70,7 +70,7 @@ int main()
       printf("Test result is: %s.\n", (isTestSuccess ? "OK" : "KO"));
       printf("-----------------------------------------------------\n\n");
 
-      std::string inputFileName = "/home/donald/Documents/Tutoriel/cryptopal/set1/test/texts/4.txt";
+      std::string inputFileName = "test/texts/4.txt";
       std::string outputCtxtStr;
       std::string outputPtxtStr;
       uint8_t decryptionKey;
