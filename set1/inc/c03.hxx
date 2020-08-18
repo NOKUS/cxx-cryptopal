@@ -25,11 +25,12 @@ bool isPrintable(const std::string inputStr);
  */
 void compute_string_score(const std::string input, float& score);
 
-/** @brief  Take a hex encoded string which is xor'd encrypted with an unknow key and return a decryption of input and de encryption key. 
+/** @brief  Take a hex encoded string which is xor'd encrypted with an unknow key and return a decryption of input and the encryption key. 
  *  @param  inputStr    Encrypted hex encoded string with an unknow key.
+ *  @param  bestScore   The score of string which gets the best norm L1 value. 
  *  @param  key         Key which encrypt input and that we looking for.
  *  @param  outputStr   Decryption of input key.
  */
-void single_byte_xor_cipher(const std::string inputStr, uint8_t &key, std::string &outputStr);
+void single_byte_xor_cipher(const std::string inputStr, float &bestScore, uint8_t &key, std::string &outputStr);
 
 #endif /* __C03_HXX__*/

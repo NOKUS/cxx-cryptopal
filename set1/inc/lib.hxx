@@ -2,6 +2,7 @@
 #define __LIB_HXX__
 
 #include <iostream>
+#include <fstream>
 #include <cstdint>
 #include <cstring>
 #include <cassert>
@@ -14,6 +15,7 @@
 #include "test_c01.hxx"
 #include "test_c02.hxx"
 #include "test_c03.hxx"
+#include "test_c04.hxx"
 
 typedef std::string base64;
 

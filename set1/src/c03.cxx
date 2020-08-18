@@ -36,6 +36,7 @@ bool isPrintable(std::string inputStr)
  *  @param  inputStr    String that we want to know if it is printable.
  */
 
+    inputStr.pop_back();
     bool printable = true;
 
     for (unsigned int i = 0; (i < inputStr.length()) && printable; i++)
@@ -70,10 +71,11 @@ void compute_string_score(const std::string input, float& score)
             
 }
 
-void single_byte_xor_cipher(const std::string inputStr, uint8_t &key, std::string &outputStr)
+void single_byte_xor_cipher(const std::string inputStr, float &bestScore, uint8_t &key, std::string &outputStr)
 {
 /** @brief  Take a hex encoded string which is xor'd encrypted with an unknow key and return a decryption of input and de encryption key. 
  *  @param  inputStr    Encrypted hex encoded string with an unknow key.
+ *  @param  bestScore   The score of string which gets the best norm L1 value. 
  *  @param  key         Key which encrypt input and that we looking for.
  *  @param  outputStr   Decryption of input key.
  */
@@ -84,9 +86,9 @@ void single_byte_xor_cipher(const std::string inputStr, uint8_t &key, std::strin
     /* Convert string to array of bytes */
     hex_string_to_hex_array(inputStr, lenInputArray, inputArray);
 
-    float bestScore = -1;
+    bestScore = -INFINITY;
     /* Find key in range [0..255] since text is encrypted by a byte */
-    for (uint8_t tmpKey = 0; tmpKey < 255; tmpKey++)
+    for (int tmpKey = 0; tmpKey < 256; tmpKey++)
     {
         uint8_t* decodedArray;
         int lenDecodedArray;

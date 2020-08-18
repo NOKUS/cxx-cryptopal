@@ -3,11 +3,12 @@
 #include "c01.hxx"
 #include "c02.hxx"
 #include "c03.hxx"
+#include "c04.hxx"
 
 using namespace std;
 
 /* Number of Challenge to compilate */
-#define TEST 03
+#define TEST 04
 
 
 int main()
@@ -49,12 +50,38 @@ int main()
       std::string challengeInput = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736";
       std::string challengeOutput;
       uint8_t decryptionKey;
+      float bestScore = -INFINITY;
 
-      single_byte_xor_cipher(challengeInput, decryptionKey, challengeOutput);
+      single_byte_xor_cipher(challengeInput, bestScore, decryptionKey, challengeOutput);
 
       printf("Challenges / Set 1 / Challenge 3 :\n");
       std::cout << "Input:  \t" << challengeInput << std::endl;
       std::cout << "Output: \t" << challengeOutput << std::endl;
+      std::cout << "Best Score\t" << bestScore << std::endl;
+      std::cout << "Decryption key:\t" << (int)decryptionKey << std::endl;
+      printf("-----------------------------------------------------\n\n");
+
+   #elif TEST == 04
+
+      bool isTestSuccess = test_detect_single_character_xor();
+
+      printf("-----------------------------------------------------\n");
+      printf("Test Detect single-character XOR \n");
+      printf("Test result is: %s.\n", (isTestSuccess ? "OK" : "KO"));
+      printf("-----------------------------------------------------\n\n");
+
+      std::string inputFileName = "/home/donald/Documents/Tutoriel/cryptopal/set1/test/texts/4.txt";
+      std::string outputCtxtStr;
+      std::string outputPtxtStr;
+      uint8_t decryptionKey;
+      float bestScore;
+
+      detect_single_character_xor(inputFileName, outputCtxtStr, bestScore, decryptionKey, outputPtxtStr);
+
+      printf("Challenges / Set 1 / Challenge 3 :\n");
+      std::cout << "CipherText is:  \t" << outputCtxtStr << std::endl;
+      std::cout << "Plaintext is: \t" << outputPtxtStr << std::endl;
+      std::cout << "Best Score\t" << bestScore << std::endl;
       std::cout << "Decryption key:\t" << (int)decryptionKey << std::endl;
       printf("-----------------------------------------------------\n\n");
 
