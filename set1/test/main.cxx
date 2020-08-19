@@ -4,11 +4,12 @@
 #include "c02.hxx"
 #include "c03.hxx"
 #include "c04.hxx"
+#include "c05.hxx"
 
 using namespace std;
 
 /* Number of Challenge to compilate */
-#define TEST 04
+#define TEST 05
 
 
 int main()
@@ -78,12 +79,33 @@ int main()
 
       detect_single_character_xor(inputFileName, outputCtxtStr, bestScore, decryptionKey, outputPtxtStr);
 
-      printf("Challenges / Set 1 / Challenge 3 :\n");
+      printf("Challenges / Set 1 / Challenge 4 :\n");
       std::cout << "CipherText is:  \t" << outputCtxtStr << std::endl;
       std::cout << "Plaintext is: \t" << outputPtxtStr << std::endl;
       std::cout << "Best Score\t" << bestScore << std::endl;
       std::cout << "Decryption key:\t" << (int)decryptionKey << std::endl;
       printf("-----------------------------------------------------\n\n");
+   
+   #elif TEST == 05
+
+      bool isTestSuccess = test_repeating_key_xor();
+
+      printf("-----------------------------------------------------\n");
+      printf("Test Implement repeating-key XOR \n");
+      printf("Test result is: %s.\n", (isTestSuccess ? "OK" : "KO"));
+      printf("-----------------------------------------------------\n\n");
+
+      std::string inputStr = "Burning 'em, if you ain't quick and nimble\nI go crazy when I hear a cymbal";
+      std::string output;
+      std::string key = "ICE";
+
+      repeating_key_xor(inputStr, key, output);
+
+
+      printf("Challenges / Set 1 / Challenge 5 :\n");
+      std::cout << "Output is: \t" << output << std::endl;
+      printf("-----------------------------------------------------\n\n");
+
 
    #endif
 }
