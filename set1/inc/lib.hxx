@@ -17,6 +17,7 @@
 #include "test_c03.hxx"
 #include "test_c04.hxx"
 #include "test_c05.hxx"
+#include "test_c06.hxx"
 
 typedef std::string base64;
 

@@ -33,4 +33,14 @@ void compute_string_score(const std::string input, float& score);
  */
 void single_byte_xor_cipher(const std::string inputStr, float &bestScore, uint8_t &key, std::string &outputStr);
 
+/** @brief  Take a hex encoded bytes array which is xor'd encrypted with an unknow key and return a decryption of input and the encryption key.
+ *  @param  inputArray          Encrypted hex encoded bytes array with an unknow key
+ *  @param  lenInputArray       Length of input array
+ *  @param  bestScore           The score of string which gets the best norm L1 value. 
+ *  @param  key                 Key which encrypt input and that we looking for.
+ *  @param  outputArray         Bytes array which contains decryption of input array with key
+ *  @param  lenOutputArray      Length of output array
+ */
+void single_byte_xor_cipher(const uint8_t* inputArray, const int lenInputArray, float &bestScore, uint8_t &key, int &lenOutputArray, uint8_t* &outputArray);
+
 #endif /* __C03_HXX__*/

@@ -71,6 +71,49 @@ void compute_string_score(const std::string input, float& score)
             
 }
 
+void single_byte_xor_cipher(const uint8_t* inputArray, const int lenInputArray, float &bestScore,  uint8_t &key, int &lenOutputArray, uint8_t* &outputArray)
+{
+/** @brief  Take a hex encoded bytes array which is xor'd encrypted with an unknow key and return a decryption of input and the encryption key.
+ *  @param  inputArray          Encrypted hex encoded bytes array with an unknow key
+ *  @param  lenInputArray       Length of input array
+ *  @param  bestScore           The score of string which gets the best norm L1 value. 
+ *  @param  key                 Key which encrypt input and that we looking for.
+ *  @param  outputArray         Bytes array which contains decryption of input array with key
+ *  @param  lenOutputArray      Length of output array
+ */
+
+    
+    bestScore = -INFINITY;
+    /* Find key in range [0..255] since text is encrypted by a byte */
+    for (int tmpKey = 0; tmpKey < 256; tmpKey++)
+    {
+        uint8_t* decodedArray;
+        int lenDecodedArray;
+
+        decode_bytes(inputArray, lenInputArray, tmpKey, lenDecodedArray, decodedArray);
+
+        /* Firt filter : check if the string is printable */
+        std::string decodedString;
+        bytes_to_string(decodedArray, lenDecodedArray, decodedString);
+
+        if (!isPrintable(decodedString))
+            continue;
+
+        /* Second filter : compute the score of the best text */
+        float score;
+        compute_string_score(decodedString, score);
+
+        if (bestScore < score)
+        {
+            outputArray = decodedArray;
+            lenOutputArray = lenDecodedArray;
+            bestScore = score;
+            key = tmpKey;
+
+        }                
+    }
+}
+
 void single_byte_xor_cipher(const std::string inputStr, float &bestScore, uint8_t &key, std::string &outputStr)
 {
 /** @brief  Take a hex encoded string which is xor'd encrypted with an unknow key and return a decryption of input and de encryption key. 

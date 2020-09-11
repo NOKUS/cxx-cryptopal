@@ -5,11 +5,12 @@
 #include "c03.hxx"
 #include "c04.hxx"
 #include "c05.hxx"
+#include "c06.hxx"
 
 using namespace std;
 
 /* Number of Challenge to compilate */
-#define TEST 05
+#define TEST 06
 
 
 int main()
@@ -106,6 +107,17 @@ int main()
       std::cout << "Output is: \t" << output << std::endl;
       printf("-----------------------------------------------------\n\n");
 
+   
+   #elif TEST == 06
 
+      bool isTestSuccess = test_hamming_weight();
+      isTestSuccess &= test_hamming_distance();
+      printf("Test Hamming weight and distance for challenge 06 : %d \n", isTestSuccess);
+
+      std::string inputFileName = "test/texts/6.txt";
+      std::string outputFileName = "test/texts/output_c6.txt";
+      std::string encryptionKey;
+
+      break_repeating_key_xor(inputFileName, encryptionKey, outputFileName);
    #endif
 }
