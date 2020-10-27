@@ -1,4 +1,5 @@
 #include "c01.hxx"
+#include <ostream>
 
 
 void string_to_bytes(const std::string inputStr, int &lenOuput, uint8_t* &output)
@@ -25,7 +26,8 @@ void bytes_to_string(const uint8_t* input, const int lenInput, std::string &outp
  *  @param  lenInput    length of input array
  *  @param  outputStr   string which representes input array.
  */
-    outputStr.assign(input, input + lenInput);
+
+   outputStr.assign(input, input + lenInput);
 }
 
 void hex_string_to_hex_array(const std::string &input, int& lenOutput, uint8_t* &output)

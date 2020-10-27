@@ -11,8 +11,13 @@
  *  @param  lenOutput   Length of output array.
  *  @param  output      Decrypted array of bytes.
  */
-void decode_bytes(const uint8_t* input, const int lenInput, \
-        const uint8_t key, int &lenOutput, uint8_t* &output);
+void decode_bytes(const uint8_t* input, const int lenInput, const uint8_t key, int &lenOutput, uint8_t* &output);
+
+/** @brief check if array contains only ascii bytes ie integer between [0, 128[
+ *  @param inputArray           Array which contains bytes that should be ascii printable.
+ *  @param lenInputArray        Length of input array
+ */
+bool isPrintable(const uint8_t* inputArray,  const int lenInputArray);
 
 /** @brief  Check if a string is printable.
  *  @param  inputStr    String that we want to know if it is printable.

@@ -12,8 +12,7 @@ std::map <char, float> letterFrequency = {
     {'s', 6.59}, {'t', 9.15}, {'u', 2.79}, {'v', 1.00}, {'w', 1.89}, {'x', 0.21}, {'y', 1.65}, {'z', 0.07}
     };
 
-void decode_bytes(const uint8_t* input, const int lenInput, \
-        const uint8_t key, int &lenOutput, uint8_t* &output)
+void decode_bytes(const uint8_t* input, const int lenInput, const uint8_t key, int &lenOutput, uint8_t* &output)
 {
 /** @brief  Decode a bytes array where each byte is xor'd with byte key.
  *  @param  input       Encrypted input array of bytes.
@@ -28,6 +27,20 @@ void decode_bytes(const uint8_t* input, const int lenInput, \
 
     for (int i = 0; i < lenOutput; i++)
         output[i] = input[i] ^ key;
+}
+
+bool isPrintable(const uint8_t* inputArray,  const int lenInputArray)
+{
+    bool printable = true;
+    for (int i = 0; i < lenInputArray; i++)
+    {
+        if ((inputArray[i] < 0) || (inputArray[i] > 127))
+        {
+            printable = false;
+            break;
+        }
+    }
+    return printable;    
 }
 
 bool isPrintable(std::string inputStr)
@@ -87,6 +100,7 @@ void single_byte_xor_cipher(const uint8_t* inputArray, const int lenInputArray, 
     /* Find key in range [0..255] since text is encrypted by a byte */
     for (int tmpKey = 0; tmpKey < 256; tmpKey++)
     {
+        //std::cout << "tmpKey = " <<  tmpKey << std::endl;
         uint8_t* decodedArray;
         int lenDecodedArray;
 
@@ -94,16 +108,24 @@ void single_byte_xor_cipher(const uint8_t* inputArray, const int lenInputArray, 
 
         /* Firt filter : check if the string is printable */
         std::string decodedString;
+        //hex_array_to_hex_string(decodedArray, lenDecodedArray, decodedString);
         bytes_to_string(decodedArray, lenDecodedArray, decodedString);
-
-        if (!isPrintable(decodedString))
+        /*
+        if (tmpKey == 84)
+        {
+            std::cout << "\nptxtStr = " << decodedString << std::endl;
+            bool boolean = isPrintable(decodedArray, lenDecodedArray);
+            std::cout << "is string is printable ? " << boolean << std::endl;             
+        }
+        */
+        if (!isPrintable(decodedArray, lenDecodedArray))
             continue;
 
         /* Second filter : compute the score of the best text */
-        float score;
+        float score = -INFINITY;
         compute_string_score(decodedString, score);
 
-        if (bestScore < score)
+        if (bestScore <= score)
         {
             outputArray = decodedArray;
             lenOutputArray = lenDecodedArray;
@@ -126,7 +148,7 @@ void single_byte_xor_cipher(const std::string inputStr, float &bestScore, uint8_
     uint8_t* inputArray;
     int lenInputArray;
 
-    /* Convert string to array of bytes */
+    /* Convert hexadecimal string into its equivalant in array of bytes */
     hex_string_to_hex_array(inputStr, lenInputArray, inputArray);
 
     bestScore = -INFINITY;
@@ -142,14 +164,14 @@ void single_byte_xor_cipher(const std::string inputStr, float &bestScore, uint8_
         std::string decodedString;
         bytes_to_string(decodedArray, lenDecodedArray, decodedString);
 
-        if (!isPrintable(decodedString))
+        if (!isPrintable(decodedArray, lenDecodedArray))
             continue;
 
         /* Second filter : compute the score of the best text */
         float score;
         compute_string_score(decodedString, score);
 
-        if (bestScore < score)
+        if (bestScore <= score)
         {
             bestScore = score;
             outputStr = decodedString;

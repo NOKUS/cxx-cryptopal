@@ -45,17 +45,18 @@ void find_key_size(const uint8_t* input, const int lenInput, int& KEYSIZE)
 
     float minimalScore = +INFINITY;
 
+    // 40 is the size define as maximal length for key in this challenge.
     for (int probableKeySize = 2; probableKeySize <= 40; probableKeySize++)
     {
         float score = 0;
-        for(int i = 0; i < (lenInput - 2*probableKeySize); i++)
+        for(int i = 0; i < (lenInput - (2*probableKeySize)); i++)
         {
             int tmpScore = 0;
             hamming_distance(&input[i], probableKeySize, &input[i + probableKeySize], probableKeySize, tmpScore);
             score += tmpScore;
         }
 
-        score /= probableKeySize;
+        score = score / probableKeySize;
 
         if (score < minimalScore)
         {
@@ -74,13 +75,13 @@ void partition_text(const uint8_t* input, const int lenInput, const int KEYSIZE,
  *  @param  commonLenOutput common length of each bytes array in the set of text
  *  @param  arrayOfOutput   set (array of pointer to bytes array) of (bytes array) text partitioned from input (bytes array) text
  */
-
     arrayOfOutput = new uint8_t*[KEYSIZE];
     communLenOutput = lenInput/KEYSIZE;
     int rest = lenInput - (communLenOutput * KEYSIZE);
 
+    // Add one cellule for the case where lenInput is not a multiple onr KEYSIZE
     communLenOutput++;
-    std::cout << "communLenOutput = " << communLenOutput << " lenInput = " << lenInput <<std::endl;
+    //std::cout << "communLenOutput = " << communLenOutput << " lenInput = " << lenInput <<std::endl;
     for (int i = 0; i < KEYSIZE; i++)
         arrayOfOutput[i] = new uint8_t[communLenOutput];
 
@@ -93,33 +94,6 @@ void partition_text(const uint8_t* input, const int lenInput, const int KEYSIZE,
     if (rest != 0)
         for (int i = 0; i < rest; i++)
             arrayOfOutput[i][communLenOutput-1] = input[KEYSIZE*(communLenOutput - 1) + i];
-
-/*
-    std::cout << "inputStr = " << std::endl;
-    for (int i = 0; i < lenInput; i++)
-    {
-        if ((i % (KEYSIZE)) == 0)
-        {
-            std::cout << "\n";
-            std::cout << (int)input[i] << " ";
-        }
-        else
-            std::cout << (int)input[i] << " ";
-    }
-    std::cout<< "\n----\n" <<std::endl;
-
-    for (int i = 0; i < KEYSIZE; i++)
-    {
-        std::cout << "set[" << i << "] = " << std::endl;
-        for (int j = 0; j < communLenOutput; j++)
-        {
-            std::cout <<(int) arrayOfOutput[i][j] << " ";
-        }
-        std::cout << "\n" << std::endl;
-        
-    }
-*/ 
-    
 }
 
 void find_key(uint8_t** setInputArray, const int communLenInput, const int KEYSIZE, uint8_t* &KEY)
@@ -138,7 +112,6 @@ void find_key(uint8_t** setInputArray, const int communLenInput, const int KEYSI
     for (int i = 0; i < KEYSIZE; i++)
     {
         single_byte_xor_cipher(setInputArray[i], communLenInput, bestScore, KEY[i], lenOutputArray, outputArray);
-        std::cout << "KEY[" << i << "] = " << (int)KEY[i] << std::endl;
     }
 }
 
@@ -177,42 +150,33 @@ void break_repeating_key_xor(const std::string inputFileName, std::string &KEY, 
     {
         std::string ctxtStr = "";
         base64 base64LineStr;
-        std::string lineStr;
-        std::string base64CtxtStr = "";
         std::string ctxtLineStr;
 
         while (getline(myInStream, base64LineStr))
         {
+            /* In this case, the decoded text is a hexa string */
             base64_to_string(base64LineStr, ctxtLineStr);
             ctxtStr += ctxtLineStr;
-            std::cout << "ctxtStr     : " << ctxtStr << "\n" << std::endl;
-            std::cout << "ctxtLineStr : " << ctxtLineStr << "\n\n" << std::endl;
         }
 
-        
-        //base64_to_string(base64CtxtStr, ctxtStr);
-        //std::cout << "lineStr : " << lineStr << std::endl;
-        //ctxtStr += lineStr;
-        //std::cout << "ctxtStr : " << ctxtStr << std::endl;
-        
-
-        //std::cout << "encrypted ctxt : \n" << ctxtStr << std::endl;
         uint8_t* ctxtArray;
         int lenCtxtArray;
 
+        /* Encode string ciphertext into an array of bytes */
         string_to_bytes(ctxtStr, lenCtxtArray, ctxtArray);
-        //base64_to_hex_array(base64CtxtStr, lenCtxtArray, ctxtArray);
 
         int KEYSIZE = 0;
+        /* Find the length of a key used in the Vigenere encryption of plaintext */
         find_key_size(ctxtArray, lenCtxtArray, KEYSIZE);
 
         int communLenCtxtArray;
         uint8_t** setOfCtxtArray;
+        /* Split a Vigenere ciphertext into a set on Caesar Ciphertexts */
         partition_text(ctxtArray, lenCtxtArray, KEYSIZE, communLenCtxtArray, setOfCtxtArray);
 
         uint8_t* encryptionKeyArray;
+        /* Return the key (Caesar encryption key) used to encrypt one block of Vigenere encryption scheme */
         find_key(setOfCtxtArray, communLenCtxtArray, KEYSIZE, encryptionKeyArray);
-        std::cout << "encryptionKeyArray[0] = " << (int)encryptionKeyArray[1] << std::endl;
 
         int lenPtxtArray;
         uint8_t* ptxtArray;
@@ -221,6 +185,9 @@ void break_repeating_key_xor(const std::string inputFileName, std::string &KEY, 
         std::string ptxtStr;
         bytes_to_string(ptxtArray, lenPtxtArray, ptxtStr);
         bytes_to_string(encryptionKeyArray, KEYSIZE, KEY);
+
+        std::cout << "\nPlaintext : \n\n" << ptxtStr << std::endl;
+        std::cout << "Key : " << KEY << std::endl;
 
         std::ofstream myOutStream(outputFileName.c_str());
         if (myOutStream)
