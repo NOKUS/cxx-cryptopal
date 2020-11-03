@@ -7,11 +7,12 @@
 #include "c05.hxx"
 #include "c06.hxx"
 #include "c07.hxx"
+#include "c08.hxx"
 
 using namespace std;
 
 /* Number of Challenge to compilate */
-#define TEST 07
+#define TEST 8
 
 
 int main()
@@ -130,6 +131,18 @@ int main()
       std::string aesKeyStr = "YELLOW SUBMARINE";
 
       decryption_aes_128_in_ecb_mode(inputFileName, aesKeyStr, outputFileName);
+   
+   #elif TEST == 8
+
+      printf("Challenges / Set 1/ Challenge 8:\n");
+      std::string inputFileName = "test/texts/8.txt";
+      std::string goodAesEcbCtxt;
+      int nbrOfBlockRepetition;
+
+      detect_aes_in_ecb_mode(inputFileName, goodAesEcbCtxt, nbrOfBlockRepetition);
+      
+      std::cout << "Output is: \n" << goodAesEcbCtxt << "\n" << std::endl;
+      printf("There are %d repetitions of block in this ciphertext.\n\n", nbrOfBlockRepetition);
    
    #endif
 }
