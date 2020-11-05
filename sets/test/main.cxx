@@ -8,11 +8,12 @@
 #include "c06.hxx"
 #include "c07.hxx"
 #include "c08.hxx"
+#include "c09.hxx"
 
 using namespace std;
 
 /* Number of Challenge to compilate */
-#define TEST 8
+#define TEST 9
 
 
 int main()
@@ -143,6 +144,23 @@ int main()
       
       std::cout << "Output is: \n" << goodAesEcbCtxt << "\n" << std::endl;
       printf("There are %d repetitions of block in this ciphertext.\n\n", nbrOfBlockRepetition);
+
+   #elif TEST == 9
+   
+      std::string challengeInput = "YELLOW SUBMARINE";
+      std::string expectedOutput = "YELLOW SUBMARINE\x04\x04\x04\x04";
+      std::string challengeOutput;
+      std::string unpaddedPlaintext;
+
+      pkcs7_padding_without_bytes(16, challengeInput, challengeOutput);
+      pkcs7_unpadding_without_bytes(challengeOutput, unpaddedPlaintext);
+
+      printf("Challenges / Set 2 / Challenge 9 :\n");
+      std::cout << "Input Challenge: \t" << challengeInput << std::endl;
+      std::cout << "Output Challenge: \t" << challengeOutput << std::endl;
+      std::cout << "unpadded Plaintext: \t" << unpaddedPlaintext << std::endl;
+      printf("-----------------------------------------------------\n\n");
+   
    
    #endif
 }
