@@ -10,17 +10,16 @@ void handleErrors(void)
 }
 
 /* This code is extract from forum: https://stackoverflow.com/questions/38342326/aes-256-encryption-with-openssl-library-using-ecb-mode-of-operation */
-void encrypt_aes_128_in_ecb(const uint8_t* ptxtArray, const int lenPtxtArray, const uint8_t* aesKeyArray, int& lenCtxtArray, uint8_t* &ctxtArray)
+void encrypt_aes_128_in_ecb(const uint8_t* plaintextArray, const int lenPlaintextArray, const bool pad, const uint8_t* keyArray, int& lenCiphertextArray, uint8_t* &ciphertextArray)
 {
 /** @brief  Algorithm which computes the AES-128 encryption of an array plaintext in the mode ECB
- *  @param  ptxtArray       The byte array which contains plaintext
- *  @param  lenPtxtArray    The length of the input plaintext byte array
- *  @param  aesKey          The array which contains secret key
- *  @param  lenCtxtArray    The length of the output ciphertext array
- *  @param  ctxtArray       The array which contains ciphertext
+ *  @param  plaintextArray       The byte array which contains plaintext
+ *  @param  lenPlaintextArray    The length of the input plaintext byte array
+ *  @param  keyArray          The array which contains secret key
+ *  @param  lenCiphertextArray    The length of the output ciphertext array
+ *  @param  ciphertextArray       The array which contains ciphertext
  */
-    EVP_CIPHER_CTX *ctx;
-    
+    EVP_CIPHER_CTX *ctx;    
     int len;
 
     /* Create and initialise the context */
@@ -29,26 +28,34 @@ void encrypt_aes_128_in_ecb(const uint8_t* ptxtArray, const int lenPtxtArray, co
     /* Initialise the encryption operation. IMPORTANT - ensure you use a key
     * In this example we are using 256 bit AES (i.e. a 256 bit key). 
     */
-    if(1 != EVP_EncryptInit_ex(ctx, EVP_aes_128_ecb(), NULL, aesKeyArray, NULL))  handleErrors();
+    if(1 != EVP_EncryptInit_ex(ctx, EVP_aes_128_ecb(), NULL, keyArray, NULL))  handleErrors();
+
+    /* enable or desable the padding at the end of plaintext 
+       for this case, length of plaintext should be a multiple of block
+    */
+    EVP_CIPHER_CTX_set_padding(ctx, pad);
+
+    /*initialize ciphertext array with the length of plaintext plus the size of one block = 16 bytes*/
+    ciphertextArray = new uint8_t[lenPlaintextArray + 16];
 
     /* Provide the message to be encrypted, and obtain the encrypted output.
     * EVP_EncryptUpdate can be called multiple times if necessary
     */
-    if(1 != EVP_EncryptUpdate(ctx, ctxtArray, &len, ptxtArray, lenPtxtArray))
+    if(1 != EVP_EncryptUpdate(ctx, ciphertextArray, &len, plaintextArray, lenPlaintextArray))
         handleErrors();
-    lenCtxtArray = len;
+    lenCiphertextArray = len;
 
     /* Finalise the encryption. Further ciphertext bytes may be written at
     * this stage.
     */
-    if(1 != EVP_EncryptFinal_ex(ctx, ctxtArray + len, &len))  handleErrors();
-    lenCtxtArray += len;
+    if(1 != EVP_EncryptFinal_ex(ctx, ciphertextArray + len, &len))  handleErrors();
+    lenCiphertextArray += len;
 
     /* Clean up */
     EVP_CIPHER_CTX_free(ctx);
 }
 
-void decrypt_aes_128_in_ecb(const uint8_t* ctxtArray, const int lenCtxtArray, const uint8_t* aesKeyArray, int& lenPtxtArray, uint8_t* &ptxtArray)
+void decrypt_aes_128_in_ecb(const uint8_t* ctxtArray, const int lenCtxtArray, const bool pad, const uint8_t* aesKeyArray, int& lenPtxtArray, uint8_t* &ptxtArray)
 {
 /** @brief  Algorithm which computes the AES-128 decryption of an array ciphertext in the mode ECB
  *  @param  ctxtArray       The array which contains ciphertext
@@ -65,9 +72,14 @@ void decrypt_aes_128_in_ecb(const uint8_t* ctxtArray, const int lenCtxtArray, co
     if(!(ctx = EVP_CIPHER_CTX_new())) handleErrors();
 
     /* Initialise the decryption operation. IMPORTANT - ensure you use a key
-    * In this example we are using 256 bit AES (i.e. a 256 bit key). The
+    * In this example we are using 128 bit AES (i.e. a 128 bit key). The
     */
     if(1 != EVP_DecryptInit_ex(ctx, EVP_aes_128_ecb(), NULL, aesKeyArray, NULL)) handleErrors();
+    
+    /* enable or desable the padding at the end of plaintext 
+       for this case, length of plaintext should be a multiple of block
+    */
+    EVP_CIPHER_CTX_set_padding(ctx, pad);
 
     ptxtArray = new uint8_t[lenCtxtArray];
 
@@ -88,6 +100,7 @@ void decrypt_aes_128_in_ecb(const uint8_t* ctxtArray, const int lenCtxtArray, co
     EVP_CIPHER_CTX_free(ctx);
 }
 
+
 void decryption_aes_128_in_ecb_mode(const std::string inputFileName, const std::string aesKeyStr, std::string& outputFileName)
 {
 /** @brief  Algorithme which computes AES-128 decryption in ECB mode for a text contains in a file
@@ -95,7 +108,7 @@ void decryption_aes_128_in_ecb_mode(const std::string inputFileName, const std::
  *  @param  aesKeyStr       The string which contains secret key use to decrypt text
  *  @param  outputFileName  The string which contains fullname where file will be saved
  */
-     std::ifstream myInStream(inputFileName.c_str());
+    std::ifstream myInStream(inputFileName.c_str());
     
     if (myInStream)
     {
@@ -110,6 +123,9 @@ void decryption_aes_128_in_ecb_mode(const std::string inputFileName, const std::
             ctxtStr += ctxtLineStr;
         }
 
+        /*for this challenge, we use autopadding of decryption*/
+        bool pad = 1;
+
         uint8_t* ctxtArray;
         int lenCtxtArray;
 
@@ -122,7 +138,7 @@ void decryption_aes_128_in_ecb_mode(const std::string inputFileName, const std::
 
         uint8_t* ptxtArray;
         int lenPtxtArray;
-        decrypt_aes_128_in_ecb(ctxtArray, lenCtxtArray, aesKeyArray, lenPtxtArray, ptxtArray);
+        decrypt_aes_128_in_ecb(ctxtArray, lenCtxtArray, pad, aesKeyArray, lenPtxtArray, ptxtArray);
 
         std::string ptxtStr;
         bytes_to_string(ptxtArray, lenPtxtArray, ptxtStr);

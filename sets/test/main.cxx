@@ -9,11 +9,12 @@
 #include "c07.hxx"
 #include "c08.hxx"
 #include "c09.hxx"
+#include "c10.hxx"
 
 using namespace std;
 
 /* Number of Challenge to compilate */
-#define TEST 9
+#define TEST 10
 
 
 int main()
@@ -126,11 +127,14 @@ int main()
 
    #elif TEST == 07
 
-      printf("Challenges / Set 1/ Challenge 7:\n");
+      bool isTestSuccess = test_aes_128_ecb();
+      printf("-----------------------------------------------------\n");
+      printf("Test Challenges / set 1 / challenge 7 \n");
+      printf("Test result is: %s.\n", (isTestSuccess ? "OK" : "KO"));
+      printf("-----------------------------------------------------\n\n");
       std::string inputFileName = "test/texts/7.txt";
       std::string outputFileName = "test/texts/output_c07.txt";
       std::string aesKeyStr = "YELLOW SUBMARINE";
-
       decryption_aes_128_in_ecb_mode(inputFileName, aesKeyStr, outputFileName);
    
    #elif TEST == 8
@@ -161,6 +165,20 @@ int main()
       std::cout << "unpadded Plaintext: \t" << unpaddedPlaintext << std::endl;
       printf("-----------------------------------------------------\n\n");
    
-   
+   #elif TEST == 10
+
+      bool isTestSuccess = test_aes_128_cbc();
+      printf("-----------------------------------------------------\n");
+      printf("Test Challenges / set 2 / challenge 10 \n");
+      printf("Test result is: %s.\n", (isTestSuccess ? "OK" : "KO"));
+      printf("-----------------------------------------------------\n\n");
+      std::string inputFileName = "test/texts/10.txt";
+      std::string outputFileName = "test/texts/output_c10.txt";
+      std::string keyStr = "YELLOW SUBMARINE";
+      std::string IVStr = "00000000000000000000000000000000";
+
+      decrypt_cbc_text(inputFileName, keyStr, IVStr, outputFileName);
+
+        
    #endif
 }
