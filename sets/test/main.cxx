@@ -10,11 +10,12 @@
 #include "c08.hxx"
 #include "c09.hxx"
 #include "c10.hxx"
+#include "c11.hxx"
 
 using namespace std;
 
 /* Number of Challenge to compilate */
-#define TEST 10
+#define TEST 11
 
 
 int main()
@@ -151,6 +152,9 @@ int main()
 
    #elif TEST == 9
    
+      printf("-----------------------------------------------------\n");
+      printf("Challenges / Set 2 / Challenge 9 :\n");
+      printf("-----------------------------------------------------\n\n");
       std::string challengeInput = "YELLOW SUBMARINE";
       std::string expectedOutput = "YELLOW SUBMARINE\x04\x04\x04\x04";
       std::string challengeOutput;
@@ -159,7 +163,7 @@ int main()
       pkcs7_padding_without_bytes(16, challengeInput, challengeOutput);
       pkcs7_unpadding_without_bytes(challengeOutput, unpaddedPlaintext);
 
-      printf("Challenges / Set 2 / Challenge 9 :\n");
+      
       std::cout << "Input Challenge: \t" << challengeInput << std::endl;
       std::cout << "Output Challenge: \t" << challengeOutput << std::endl;
       std::cout << "unpadded Plaintext: \t" << unpaddedPlaintext << std::endl;
@@ -178,7 +182,32 @@ int main()
       std::string IVStr = "00000000000000000000000000000000";
 
       decrypt_cbc_text(inputFileName, keyStr, IVStr, outputFileName);
+      printf("-----------------------------------------------------\n\n");
 
+   #elif TEST == 11
+      printf("-----------------------------------------------------\n");
+      printf("Challenges / Set 2 / Challenge 11:\n");
+      printf("-----------------------------------------------------\n\n");
+
+      std::string plaintextStr = "";
+      for (size_t i = 0; i < 1024; i++)
+      {
+         plaintextStr +="A";
+      }
+
+      uint8_t* plaintextArray;
+      int lenPlaintextArray;
+      string_to_bytes(plaintextStr, lenPlaintextArray, plaintextArray);
+
+      uint8_t* ciphertextArray;
+      int lenCiphertextArray;
+      encryption_oracle(plaintextArray, lenPlaintextArray, lenCiphertextArray, ciphertextArray);
+
+      std::string detectedMode;
+      detect_block_cipher_mode(ciphertextArray, lenCiphertextArray, detectedMode);
+
+      std::cout << "Detected encryption AES mode is : " << detectedMode << std::endl;
+      printf("-----------------------------------------------------\n\n");      
         
    #endif
 }
