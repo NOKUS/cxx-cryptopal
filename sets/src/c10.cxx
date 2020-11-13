@@ -2,41 +2,7 @@
 #include "c07.hxx"
 #include "c09.hxx"
 #include "c10.hxx"
-
-void copy_array(const uint8_t* inputArray, const int beginInput, const int endInput, const int beginOutput, uint8_t*& outputArray)
-{
-/** @brief  Algorithm which copies a subset of array to anther array.
- *  @param  inputArray      Array that we want to copy a subarray
- *  @param  beginInput      Index of inputArray where copy should begin
- *  @param  endInput        Index of input array where copy should end
- *  @param  beginOutput     Index of output array where paste should begin
- *  @param  outputArray     Array which should contain the copy of subarray. 
- */
-    int k = 0;
-    for (int i = beginInput; i < endInput; i++)
-    {
-        outputArray[beginOutput + k] = inputArray[i];
-        k++;
-    }
-    
-
-}
-
-void copy_array(const uint8_t* inputArray, const int lenInputArray, const int& lenOutputArray, uint8_t*& outputArray)
-{
-/** @brief  Algorithm which copies an array to another one.
- *  @param  inputArray  Array that we want to copy
- *  @param  lenInputArray   Length of the input array
- *  @param  lenOutputArray  Length of the output array
- *  @param  outputArray     Array which should contain the first one
- */
-    assert(lenOutputArray >= lenInputArray);
-    for (int i = 0; i < lenInputArray; i++)
-    {
-        outputArray[i] = inputArray[i];
-    }
-    
-}
+#include <algorithm>
 
 void encrypt_aes_in_cbc(const int lenBlock, const uint8_t* plaintextArray, const int lenPlaintextArray, const bool pad, const uint8_t* key, const uint8_t* IV, int& lenCiphertextArray, uint8_t*& ciphertextArray)
 {
@@ -61,7 +27,7 @@ void encrypt_aes_in_cbc(const int lenBlock, const uint8_t* plaintextArray, const
 
     /* Define the previous ciphertext block which is initialize with initilisation vector IV */
     uint8_t* previousCiphertext = new uint8_t[lenBlock];
-    copy_array(IV, lenBlock, lenBlock, previousCiphertext);
+    std::copy(IV, IV + lenBlock, previousCiphertext);
 
     /*Define currect block to encrypt with AES in CBC mode */
     uint8_t* currentCiphertext = new uint8_t[lenBlock];
@@ -72,7 +38,7 @@ void encrypt_aes_in_cbc(const int lenBlock, const uint8_t* plaintextArray, const
     for (int i = 0; i < nbrBlock; i++)
     {
         /* get the currect block which should be encrypted */
-        copy_array(paddedPlaintext, lenBlock * i, lenBlock*(i + 1), 0, currentCiphertext);
+        std::copy(paddedPlaintext + lenBlock*i, paddedPlaintext + lenBlock*(i + 1), currentCiphertext);
 
         /* xor with the previous encrypted block and save the result in currentCiphertext */
         bytes_array_fixed_xor(currentCiphertext, lenBlock, previousCiphertext, lenBlock, lenCurrentCtxt, currentCiphertext);
@@ -81,10 +47,10 @@ void encrypt_aes_in_cbc(const int lenBlock, const uint8_t* plaintextArray, const
         encrypt_aes_128_in_ecb(currentCiphertext, lenCurrentCtxt, pad, key, lenCurrentCtxt, currentCiphertext);
 
         /* Save the encrypted block in the array of output ciphertext */
-        copy_array(currentCiphertext, 0, lenBlock, lenBlock*i, ciphertextArray);
+        std::copy(currentCiphertext, currentCiphertext + lenBlock, ciphertextArray + lenBlock*i);
         
         /* Update the previous ciphertext block with the current ciphertext block */
-        copy_array(currentCiphertext, lenBlock, lenBlock, previousCiphertext);
+        std::copy(currentCiphertext, currentCiphertext + lenBlock, previousCiphertext);
     }
 }
 
@@ -117,10 +83,10 @@ void decrypt_aes_in_cbc(const int lenBlock, const uint8_t* ciphertextArray, cons
     for (int i = (nbrBlock - 1); i > 0 ; i--)
     {
         /* get the currect block which should be decrypted */
-        copy_array(ciphertextArray,i*lenBlock, (i+1)*lenBlock, 0, currentCiphertext);
+        std::copy(ciphertextArray + lenBlock*i, ciphertextArray + lenBlock*(i+1), currentCiphertext);
         
         /* get the next block which should be decrypted and which is use to decrypt current block */
-        copy_array(ciphertextArray, (i-1)*lenBlock, i*lenBlock, 0, nextCiphertext);
+        std::copy(ciphertextArray + lenBlock*(i-1), ciphertextArray + lenBlock*i, nextCiphertext);
 
         /* decrypt current block with aes in ecb mode */
         decrypt_aes_128_in_ecb(currentCiphertext, lenCurrentCtxt, pad, key, lenCurrentCtxt, currentCiphertext);
@@ -129,7 +95,7 @@ void decrypt_aes_in_cbc(const int lenBlock, const uint8_t* ciphertextArray, cons
         bytes_array_fixed_xor(currentCiphertext, lenCurrentCtxt, nextCiphertext, lenNextCtxt, lenCurrentCtxt, currentCiphertext);
 
         /* append current block in the padding plaintext array */
-        copy_array(currentCiphertext, 0, lenCurrentCtxt, lenBlock*i, paddedPlaintext);
+        std::copy(currentCiphertext, currentCiphertext + lenCurrentCtxt, paddedPlaintext + lenBlock*i);
     }
 
     /* Threat the last block */
@@ -140,8 +106,8 @@ void decrypt_aes_in_cbc(const int lenBlock, const uint8_t* ciphertextArray, cons
     /* xor the first block decrypted with IV */
     bytes_array_fixed_xor(currentCiphertext, lenCurrentCtxt, IV, lenBlock, lenCurrentCtxt, currentCiphertext);
 
-    /* append first block to padded plaintext array */        
-    copy_array(currentCiphertext, 0, lenCurrentCtxt, 0, paddedPlaintext);
+    /* append first block to padded plaintext array */
+    std::copy(currentCiphertext, currentCiphertext + lenCurrentCtxt, paddedPlaintext);        
 
     /* remove padding added before encryption */
     pkcs7_unpadding_bytes(paddedPlaintext, lenPaddedPlaintext, lenPlaintextArray, plaintextArray);

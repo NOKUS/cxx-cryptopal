@@ -4,23 +4,6 @@
 #include "lib.hxx"
 #include "c01.hxx"
 
-/** @brief  Algorithm which copies a subset of array to anther array.
- *  @param  inputArray      Array that we want to copy a subarray
- *  @param  beginInput      Index of inputArray where copy should begin
- *  @param  endInput        Index of input array where copy should end
- *  @param  beginOutput     Index of output array where paste should begin
- *  @param  outputArray     Array which should contain the copy of subarray. 
- */
-void copy_array(const uint8_t* inputArray, const int beginInput, const int endInput, const int beginOutput, uint8_t*& outputArray);
-
-/** @brief  Algorithm which copies an array to another one.
- *  @param  inputArray  Array that we want to copy
- *  @param  lenInputArray   Length of the input array
- *  @param  lenOutputArray  Length of the output array
- *  @param  outputArray     Array which should contain the first one
- */
-void copy_array(const uint8_t* inputArray, const int lenInputArray, const int& lenOutputArray, uint8_t*& outputArray);
-
 /** @brief  Algorithm which computes the AES encryption of an array plaintext in CBC mode
  *  @param  lenBlock                The length of the blocks
  *  @param  plaintextArray          The byte array which contains plaintext
