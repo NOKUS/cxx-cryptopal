@@ -21,7 +21,6 @@ void nbr_of_different_block(const std::string ctxtHexStr, int& nbrOfBlocks)
     nbrOfBlocks = blockOccurrence.size();
 }
 
-
 void detect_aes_in_ecb_mode(std::string inputFileName, std::string& goodAesEcbCtxt, int& nbrOfBlockRepetition)
 {
 /** @brief  Take a file which contains ciphertexts represented as hex string and find the one which is encrypted with AES-128 in ECB mode
