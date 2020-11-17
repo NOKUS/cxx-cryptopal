@@ -114,5 +114,5 @@ void detect_block_cipher_mode(const uint8_t* ciphertextArray, const int lenCiphe
         detectedMode = "ECB";
     else
         detectedMode = "CBC";
-        
+    
 }
