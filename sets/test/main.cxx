@@ -11,11 +11,12 @@
 #include "c09.hxx"
 #include "c10.hxx"
 #include "c11.hxx"
+#include "c12.hxx"
 
 using namespace std;
 
 /* Number of Challenge to compilate */
-#define TEST 11
+#define TEST 12
 
 
 int main()
@@ -207,7 +208,29 @@ int main()
       detect_block_cipher_mode(ciphertextArray, lenCiphertextArray, detectedMode);
 
       std::cout << "Detected encryption AES mode is : " << detectedMode << std::endl;
+      printf("-----------------------------------------------------\n\n");
+
+   #elif TEST == 12
+      printf("-----------------------------------------------------\n");
+      printf("Challenges / Set 2 / Challenge 12:\n");
       printf("-----------------------------------------------------\n\n");      
-        
+      
+      int blockLen;
+      block_size_cipher(blockLen);
+      std::cout << "Block length is: " << blockLen << std::endl;
+      bool isEcbMode;
+      detect_aes_mode(isEcbMode);
+      std::cout << "\nIs it ecb mode ? " << isEcbMode <<  std::endl;
+
+      int lenPlaintextArray;
+      uint8_t* plaintextArray;
+      ecb_decryption(lenPlaintextArray, plaintextArray);
+
+      std::string plaintextStr;
+      bytes_to_string(plaintextArray, lenPlaintextArray, plaintextStr);
+
+      std::cout << "\nThe encrypted text is: \n\n" << plaintextStr << std::endl;
+
+      printf("-----------------------------------------------------\n\n");
    #endif
 }
