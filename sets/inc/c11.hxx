@@ -7,7 +7,7 @@
  *  @param  blockLen    The number of bytes on block, can be 16, 24 bytes
  *  @param  aesKey      Array which contains the random key
  */
-void generate_aes_key(const int blockLen, const uint8_t*& aesKey);
+void generate_aes_key(const int blockLen, uint8_t*& aesKey);
 
 /** @brief  A padding of 5-10 bytes before and after input array
  *  @param  input           The array which should be padded
