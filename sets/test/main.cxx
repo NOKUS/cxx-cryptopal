@@ -12,11 +12,12 @@
 #include "c10.hxx"
 #include "c11.hxx"
 #include "c12.hxx"
+#include "c13.hxx"
 
 using namespace std;
 
 /* Number of Challenge to compilate */
-#define TEST 12
+#define TEST 13
 
 
 int main()
@@ -232,5 +233,19 @@ int main()
       std::cout << "\nThe encrypted text is: \n\n" << plaintextStr << std::endl;
 
       printf("-----------------------------------------------------\n\n");
+
+   #elif TEST == 13
+
+      printf("-----------------------------------------------------\n");
+      printf("Challenges / Set 2 / Challenge 12:\n");
+      printf("-----------------------------------------------------\n\n");
+      bool isTestSuccess = test_parsing_routine();
+      printf("Test result is: %s.\n\n", (isTestSuccess ? "OK" : "KO"));    
+
+      std::string emailStr = "foo@bar.com";
+      std::string jsonStr = "";
+      ecb_cut_and_paste(emailStr, jsonStr);
+      std::cout << jsonStr << std::endl;
+      printf("-----------------------------------------------------\n\n");       
    #endif
 }
