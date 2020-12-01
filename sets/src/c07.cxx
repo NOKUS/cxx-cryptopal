@@ -100,7 +100,6 @@ void decrypt_aes_128_in_ecb(const uint8_t* ctxtArray, const int lenCtxtArray, co
     EVP_CIPHER_CTX_free(ctx);
 }
 
-
 void decryption_aes_128_in_ecb_mode(const std::string inputFileName, const std::string aesKeyStr, std::string& outputFileName)
 {
 /** @brief  Algorithme which computes AES-128 decryption in ECB mode for a text contains in a file
