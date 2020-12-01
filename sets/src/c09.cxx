@@ -12,11 +12,9 @@ void pkcs7_padding_bytes(const int lenBlock, const uint8_t* plaintext, const int
  */
     int lenOffsetBytes = lenBlock - (lenPlaintext % lenBlock);
     lenPaddedPlaintext = lenPlaintext + lenOffsetBytes;
-    paddedPlaintext = new uint8_t[lenPlaintext + lenOffsetBytes];
+    paddedPlaintext = new uint8_t[lenPaddedPlaintext];
 
-    for (int i = 0; i < lenPlaintext; i++)
-        paddedPlaintext[i] = plaintext[i];
-    
+    std::copy(plaintext, plaintext + lenPlaintext, paddedPlaintext);
     for (int i = lenPlaintext; i < lenPaddedPlaintext; i++)
         paddedPlaintext[i] = lenOffsetBytes;    
 }
@@ -32,9 +30,11 @@ void pkcs7_unpadding_bytes(const uint8_t* paddedPlaintext, const int lenPaddedPl
     lenPlaintext = lenPaddedPlaintext - (int)paddedPlaintext[lenPaddedPlaintext - 1];
     plaintext = new uint8_t[lenPlaintext];
 
+    std::copy(paddedPlaintext, paddedPlaintext + lenPlaintext, plaintext);
+    /*
     for (int i = 0; i < lenPlaintext; i++)
         plaintext[i] = paddedPlaintext[i];
-    
+    */
 }
 
 void pkcs7_padding(const int lenblock, const std::string plaintextStr, std::string& paddedPlaintextStr)
